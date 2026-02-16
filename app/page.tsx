@@ -75,7 +75,7 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    // ===== GOLD PARTICLES (SAFE FOR VERCEL) =====
+    // ===== GOLD PARTICLES (SAFE VERSION) =====
     const canvas = document.getElementById("particles");
 
     if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -173,14 +173,34 @@ export default function Home() {
           <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
             PANDORA
           </h1>
-
           <p className="text-gray-300 text-lg">
             Perfect World 1.3.6
           </p>
-
           <p className="text-[#D4AF37] text-sm tracking-wider">
             x150 • PvE / PvP Balance
           </p>
+        </div>
+      </section>
+
+      {/* COUNTDOWN */}
+      <section className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] relative z-10">
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">
+          ОТКРЫТИЕ СЕРВЕРА
+        </h2>
+        <div className="flex justify-center gap-8 flex-wrap">
+          {Object.entries(timeLeft).map(([key, value], i) => (
+            <div
+              key={i}
+              className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px] backdrop-blur-sm"
+            >
+              <div className="text-3xl text-[#D4AF37] font-semibold">
+                {value}
+              </div>
+              <div className="text-xs text-gray-400 tracking-widest mt-2">
+                {key.toUpperCase()}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>
