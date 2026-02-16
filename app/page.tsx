@@ -2,14 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 
-type Particle = {
-  x: number;
-  y: number;
-  radius: number;
-  speedY: number;
-  opacity: number;
-};
-
 export default function Home() {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [scrolled, setScrolled] = useState(false);
@@ -20,39 +12,35 @@ export default function Home() {
     seconds: 0,
   });
 
-  const sectionsRef = useRef<(HTMLElement | null)[]>([]);
+  const animatedSections = useRef<HTMLElement[]>([]);
 
+  /* =========================
+     PARALLAX + NAVBAR
+  ========================== */
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const x = (window.innerWidth / 2 - e.clientX) / 80;
-      const y = (window.innerHeight / 2 - e.clientY) / 80;
+      const x = (window.innerWidth / 2 - e.clientX) / 60;
+      const y = (window.innerHeight / 2 - e.clientY) / 60;
       setOffset({ x, y });
     };
 
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-
-      sectionsRef.current.forEach((section) => {
-        if (!section) return;
-
-        const rect = section.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 100) {
-          section.classList.add("opacity-100", "translate-y-0");
-          section.classList.remove("opacity-0", "translate-y-10");
-
-          if (section.id === "features") {
-            const cards = section.querySelectorAll(".feature-card");
-            cards.forEach((card, index) => {
-              setTimeout(() => {
-                card.classList.add("opacity-100", "translate-y-0");
-                card.classList.remove("opacity-0", "translate-y-10");
-              }, index * 180);
-            });
-          }
-        }
-      });
+      setScrolled(window.scrollY > 40);
     };
 
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  /* =========================
+     COUNTDOWN
+  ========================== */
+  useEffect(() => {
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
 
     const timer = setInterval(() => {
@@ -72,68 +60,99 @@ export default function Home() {
       });
     }, 1000);
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    // ===== GOLD PARTICLES SAFE =====
-    const canvas = document.getElementById("particles");
-
-    if (canvas instanceof HTMLCanvasElement) {
-      const ctx = canvas.getContext("2d");
-
-      if (ctx) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particles: Particle[] = [];
-
-        for (let i = 0; i < 80; i++) {
-          particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 2,
-            speedY: Math.random() * 0.5 + 0.2,
-            opacity: Math.random() * 0.4 + 0.1,
-          });
-        }
-
-        const animate = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          particles.forEach((p) => {
-            p.y -= p.speedY;
-
-            if (p.y < 0) {
-              p.y = canvas.height;
-              p.x = Math.random() * canvas.width;
-            }
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
-            ctx.shadowColor = "#D4AF37";
-            ctx.shadowBlur = 6;
-            ctx.fill();
-          });
-
-          requestAnimationFrame(animate);
-        };
-
-        animate();
-      }
-    }
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("scroll", handleScroll);
-      clearInterval(timer);
-    };
+    return () => clearInterval(timer);
   }, []);
 
+  /* =========================
+     INTERSECTION OBSERVER
+  ========================== */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("opacity-100", "translate-y-0");
+          entry.target.classList.remove("opacity-0", "translate-y-10");
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    animatedSections.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  /* =========================
+     GOLD PARTICLES (SAFE)
+  ========================== */
+  useEffect(() => {
+    const canvas = document.getElementById("particles");
+    if (!(canvas instanceof HTMLCanvasElement)) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    type Particle = {
+      x: number;
+      y: number;
+      radius: number;
+      speedY: number;
+      opacity: number;
+    };
+
+    const particles: Particle[] = [];
+
+    for (let i = 0; i < 90; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2,
+        speedY: Math.random() * 0.6 + 0.2,
+        opacity: Math.random() * 0.5 + 0.2,
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p) => {
+        p.y -= p.speedY;
+
+        if (p.y < 0) {
+          p.y = canvas.height;
+          p.x = Math.random() * canvas.width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
+        ctx.shadowColor = "#D4AF37";
+        ctx.shadowBlur = 10;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+  }, []);
+
+  /* =========================
+     JSX
+  ========================== */
   return (
     <main className="relative bg-[#05070c] text-white overflow-hidden">
-      <canvas id="particles" className="fixed inset-0 z-0 pointer-events-none" />
+
+      <canvas
+        id="particles"
+        className="fixed inset-0 z-0 pointer-events-none"
+      />
 
       {/* NAVBAR */}
       <nav
@@ -144,7 +163,10 @@ export default function Home() {
         }`}
       >
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <div className="text-[#D4AF37] tracking-widest font-semibold cursor-pointer">
+          <div
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="text-[#D4AF37] tracking-widest font-semibold cursor-pointer hover:scale-105 transition"
+          >
             PANDORA PW
           </div>
         </div>
@@ -158,92 +180,81 @@ export default function Home() {
           style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
           className="absolute inset-0 w-full h-full object-cover object-left transition-transform duration-200"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/80" />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/90" />
+
         <div className="relative z-20 max-w-2xl text-right space-y-6 pr-4">
-          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
+          <h1 className="text-7xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_35px_rgba(212,175,55,0.6)]">
             PANDORA
           </h1>
+
           <p className="text-gray-300 text-lg">Perfect World 1.3.6</p>
-          <p className="text-[#D4AF37] text-sm tracking-wider">
-            x150 • PvE / PvP Balance
-          </p>
+
+          <div className="flex justify-end gap-5 pt-6">
+            <button className="px-10 py-3 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+              НАЧАТЬ ИГРУ
+            </button>
+          </div>
         </div>
       </section>
 
       {/* COUNTDOWN */}
-      <section className="py-24 px-8 md:px-20 text-center bg-[#0b0e14]">
+      <section
+        ref={(el) => el && animatedSections.current.push(el)}
+        className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
+      >
         <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">
           ОТКРЫТИЕ СЕРВЕРА
         </h2>
+
         <div className="flex justify-center gap-8 flex-wrap">
-          {Object.entries(timeLeft).map(([key, value], i) => (
+          {[
+            { label: "ДНЕЙ", value: timeLeft.days },
+            { label: "ЧАСОВ", value: timeLeft.hours },
+            { label: "МИНУТ", value: timeLeft.minutes },
+            { label: "СЕКУНД", value: timeLeft.seconds },
+          ].map((item, i) => (
             <div
               key={i}
-              className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px]"
+              className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px] backdrop-blur-sm hover:border-[#D4AF37] hover:scale-105 transition duration-300"
             >
               <div className="text-3xl text-[#D4AF37] font-semibold">
-                {value}
+                {item.value}
               </div>
               <div className="text-xs text-gray-400 tracking-widest mt-2">
-                {key.toUpperCase()}
+                {item.label}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000"
-        ref={(el) => (sectionsRef.current[0] = el)}
-      >
-        <h2 className="text-3xl tracking-widest text-[#D4AF37] mb-6">
-          О СЕРВЕРЕ
-        </h2>
-        <p className="text-gray-400 max-w-3xl mx-auto leading-relaxed">
-          Pandora PW — имперский сервер Perfect World 1.3.6 с балансом PvE и PvP.
-          Честный рейт x150, продуманная экономика и уникальные игровые события.
-        </p>
-      </section>
-
       {/* FEATURES */}
       <section
-        id="features"
-        ref={(el) => (sectionsRef.current[1] = el)}
+        ref={(el) => el && animatedSections.current.push(el)}
         className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
       >
         <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
           ОСОБЕННОСТИ
         </h2>
+
         <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
           {["Баланс PvE / PvP", "Войны кланов", "Авторские модификации"].map(
             (title, i) => (
               <div
                 key={i}
-                className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700 hover:border-[#D4AF37]"
+                className="group relative border border-[#D4AF37]/20 p-8 transition-all duration-500 hover:border-[#D4AF37] hover:-translate-y-3 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)]"
               >
-                <h3 className="text-[#D4AF37] mb-4 tracking-widest">
+                <h3 className="text-[#D4AF37] mb-4 tracking-widest group-hover:tracking-[0.2em] transition-all">
                   {title}
                 </h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 group-hover:text-gray-200 transition">
                   Продуманная система и премиальный игровой процесс.
                 </p>
               </div>
             )
           )}
         </div>
-      </section>
-
-      {/* DOWNLOAD */}
-      <section
-        ref={(el) => (sectionsRef.current[2] = el)}
-        className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
-          ГОТОВ ВСТУПИТЬ В PANDORA?
-        </h2>
-        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
-          СКАЧАТЬ КЛИЕНТ
-        </button>
       </section>
     </main>
   );
