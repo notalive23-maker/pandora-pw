@@ -20,42 +20,44 @@ export default function Home() {
     seconds: 0,
   });
 
-  const sectionsRef = useRef<HTMLElement[]>([]);
+  const animatedSections = useRef<HTMLElement[]>([]);
 
-  const addSectionRef = (el: HTMLElement | null) => {
-    if (el && !sectionsRef.current.includes(el)) {
-      sectionsRef.current.push(el);
+  const registerSection = (el: HTMLElement | null) => {
+    if (el && !animatedSections.current.includes(el)) {
+      animatedSections.current.push(el);
     }
   };
 
   useEffect(() => {
+    // ===== PARALLAX =====
     const handleMouseMove = (e: MouseEvent) => {
       const x = (window.innerWidth / 2 - e.clientX) / 80;
       const y = (window.innerHeight / 2 - e.clientY) / 80;
       setOffset({ x, y });
     };
 
+    // ===== NAVBAR =====
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
+    // ===== OBSERVER =====
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-
-          const el = entry.target as HTMLElement;
-          el.classList.add("opacity-100", "translate-y-0");
-          el.classList.remove("opacity-0", "translate-y-10");
+          entry.target.classList.add("opacity-100", "translate-y-0");
+          entry.target.classList.remove("opacity-0", "translate-y-10");
         });
       },
       { threshold: 0.2 }
     );
 
-    sectionsRef.current.forEach((section) => {
+    animatedSections.current.forEach((section) => {
       observer.observe(section);
     });
 
+    // ===== COUNTDOWN =====
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
 
     const timer = setInterval(() => {
@@ -75,9 +77,9 @@ export default function Home() {
       });
     }, 1000);
 
-    const canvas = document.getElementById("particles") as HTMLCanvasElement | null;
-
-    if (canvas) {
+    // ===== PARTICLES =====
+    const canvas = document.getElementById("particles");
+    if (canvas instanceof HTMLCanvasElement) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
         canvas.width = window.innerWidth;
@@ -137,60 +139,41 @@ export default function Home() {
       <canvas id="particles" className="fixed inset-0 z-0 pointer-events-none" />
 
       {/* NAVBAR */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-black/70 backdrop-blur-md border-b border-[#D4AF37]/20"
-            : "bg-transparent"
-        }`}
-      >
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        scrolled ? "bg-black/70 backdrop-blur-md border-b border-[#D4AF37]/20" : "bg-transparent"
+      }`}>
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
 
-          {/* LOGO */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="text-[#D4AF37] tracking-widest font-semibold hover:opacity-80 transition"
+            className="text-[#D4AF37] tracking-widest font-semibold"
           >
             PANDORA
           </button>
 
-          {/* MENU */}
           <div className="hidden md:flex gap-6">
-
             <button
               onClick={() =>
                 document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
               }
-              className="px-5 py-2 border border-[#D4AF37] text-[#D4AF37] text-sm tracking-widest
-                         hover:bg-[#D4AF37] hover:text-black transition-all duration-300
-                         hover:shadow-[0_0_20px_rgba(212,175,55,0.5)]"
+              className="px-5 py-2 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition"
             >
               О сервере
             </button>
 
-            <button
-              className="px-5 py-2 border border-[#D4AF37] text-[#D4AF37] text-sm tracking-widest
-                         hover:bg-[#D4AF37] hover:text-black transition-all duration-300
-                         hover:shadow-[0_0_20px_rgba(212,175,55,0.5)]"
-            >
+            <button className="px-5 py-2 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
               Форум
             </button>
 
-            <button
-              className="px-5 py-2 border border-[#D4AF37] text-[#D4AF37] text-sm tracking-widest
-                         hover:bg-[#D4AF37] hover:text-black transition-all duration-300
-                         hover:shadow-[0_0_20px_rgba(212,175,55,0.5)]"
-            >
+            <button className="px-5 py-2 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
               Личный кабинет
             </button>
-
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center md:justify-end overflow-hidden px-6 md:px-20">
-
+      <section className="relative min-h-screen flex items-center justify-center md:justify-end px-6 md:px-20">
         <img
           src="/images/goddess-hero.png"
           alt="Pandora"
@@ -209,16 +192,22 @@ export default function Home() {
             Perfect World 1.3.6
           </p>
 
-          <p className="text-[#D4AF37] text-sm tracking-wider">
-            x150 • PvE / PvP Balance
-          </p>
+          <div className="flex flex-col md:flex-row gap-4 md:justify-end pt-6">
+            <button className="px-10 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
+              Стартовый гайд
+            </button>
+
+            <button className="px-10 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
+              Скачать клиент
+            </button>
+          </div>
         </div>
       </section>
 
       {/* ABOUT */}
       <section
         id="about"
-        ref={addSectionRef}
+        ref={registerSection}
         className="py-32 px-8 text-center opacity-0 translate-y-10 transition-all duration-1000"
       >
         <h2 className="text-3xl tracking-widest text-[#D4AF37] mb-6">
@@ -227,57 +216,22 @@ export default function Home() {
 
         <p className="text-gray-400 max-w-3xl mx-auto leading-relaxed">
           Pandora PW — имперский сервер Perfect World 1.3.6
-          с балансом PvE и PvP, честным рейтом x150 и продуманной экономикой.
+          с балансом PvE и PvP и честным рейтом x150.
         </p>
       </section>
 
-      {/* COUNTDOWN */}
+      {/* TELEGRAM */}
       <section
-        ref={addSectionRef}
-        className="py-24 px-8 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
+        ref={registerSection}
+        className="py-24 text-center opacity-0 translate-y-10 transition-all duration-1000"
       >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
-          ОТКРЫТИЕ СЕРВЕРА
-        </h2>
-
-        <div className="flex justify-center gap-6 flex-wrap">
-          {[
-            { label: "ДНЕЙ", value: timeLeft.days },
-            { label: "ЧАСОВ", value: timeLeft.hours },
-            { label: "МИНУТ", value: timeLeft.minutes },
-            { label: "СЕКУНД", value: timeLeft.seconds },
-          ].map((item, i) => (
-            <div key={i} className="border border-[#D4AF37]/30 px-8 py-6 min-w-[100px]">
-              <div className="text-3xl text-[#D4AF37] font-semibold">
-                {item.value}
-              </div>
-              <div className="text-xs text-gray-400 mt-2">
-                {item.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* TELEGRAM CTA */}
-      <section
-        ref={addSectionRef}
-        className="py-32 px-8 text-center opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-10">
-          ГОТОВ ВСТУПИТЬ В PANDORA?
-        </h2>
-
         <a
           href="https://t.me/PandoraPw2026"
           target="_blank"
-          className="inline-block px-14 py-4 border border-[#D4AF37] text-[#D4AF37]
-                     tracking-widest text-lg
-                     hover:bg-[#D4AF37] hover:text-black
-                     hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]
-                     transition-all duration-300"
+          className="inline-block px-12 py-4 border border-[#D4AF37] text-[#D4AF37]
+                     hover:bg-[#D4AF37] hover:text-black transition"
         >
-          TELEGRAM
+          Telegram
         </a>
       </section>
 
