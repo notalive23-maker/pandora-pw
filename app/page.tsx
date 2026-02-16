@@ -22,26 +22,38 @@ export default function Home() {
 
   const sectionsRef = useRef<HTMLElement[]>([]);
 
+  const addSectionRef = (el: HTMLElement | null) => {
+    if (el && !sectionsRef.current.includes(el)) {
+      sectionsRef.current.push(el);
+    }
+  };
+
   useEffect(() => {
+    // ================= MOUSE PARALLAX =================
     const handleMouseMove = (e: MouseEvent) => {
       const x = (window.innerWidth / 2 - e.clientX) / 80;
       const y = (window.innerHeight / 2 - e.clientY) / 80;
       setOffset({ x, y });
     };
 
+    // ================= NAVBAR SCROLL =================
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+    };
 
-      sectionsRef.current.forEach((section) => {
-        const rect = section.getBoundingClientRect();
+    // ================= INTERSECTION OBSERVER =================
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-        if (rect.top < window.innerHeight - 100) {
-          section.classList.add("opacity-100", "translate-y-0");
-          section.classList.remove("opacity-0", "translate-y-10");
+          const el = entry.target as HTMLElement;
+          el.classList.add("opacity-100", "translate-y-0");
+          el.classList.remove("opacity-0", "translate-y-10");
 
-          if (section.id === "features") {
+          if (el.id === "features") {
             const cards =
-              section.querySelectorAll<HTMLElement>(".feature-card");
+              el.querySelectorAll<HTMLElement>(".feature-card");
 
             cards.forEach((card, index) => {
               setTimeout(() => {
@@ -50,11 +62,16 @@ export default function Home() {
               }, index * 180);
             });
           }
-        }
-      });
-    };
+        });
+      },
+      { threshold: 0.2 }
+    );
 
-    // ===== COUNTDOWN =====
+    sectionsRef.current.forEach((section) => {
+      observer.observe(section);
+    });
+
+    // ================= COUNTDOWN =================
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
 
     const timer = setInterval(() => {
@@ -74,80 +91,90 @@ export default function Home() {
       });
     }, 1000);
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    // ===== GOLD PARTICLES (SAFE) =====
+    // ================= GOLD PARTICLES =================
     const canvas = document.getElementById(
       "particles"
     ) as HTMLCanvasElement | null;
 
-    if (!canvas) return;
+    if (canvas) {
+      const context = canvas.getContext("2d");
+      if (context) {
+        const ctx = context;
 
-    const context = canvas.getContext("2d");
-    if (!context) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-    const ctx = context;
+        const particles: Particle[] = [];
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles: Particle[] = [];
-
-    for (let i = 0; i < 80; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2,
-        speedY: Math.random() * 0.5 + 0.2,
-        opacity: Math.random() * 0.4 + 0.1,
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((p) => {
-        p.y -= p.speedY;
-
-        if (p.y < 0) {
-          p.y = canvas.height;
-          p.x = Math.random() * canvas.width;
+        for (let i = 0; i < 90; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 2,
+            speedY: Math.random() * 0.5 + 0.2,
+            opacity: Math.random() * 0.4 + 0.1,
+          });
         }
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
-        ctx.shadowColor = "#D4AF37";
-        ctx.shadowBlur = 6;
-        ctx.fill();
-      });
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      requestAnimationFrame(animate);
-    };
+          particles.forEach((p) => {
+            p.y -= p.speedY;
 
-    animate();
+            if (p.y < 0) {
+              p.y = canvas.height;
+              p.x = Math.random() * canvas.width;
+            }
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
+            ctx.shadowColor = "#D4AF37";
+            ctx.shadowBlur = 8;
+            ctx.fill();
+          });
+
+          requestAnimationFrame(animate);
+        };
+
+        animate();
+      }
+    }
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
       clearInterval(timer);
     };
   }, []);
 
-  const addSectionRef = (el: HTMLElement | null) => {
-    if (el && !sectionsRef.current.includes(el)) {
-      sectionsRef.current.push(el);
-    }
-  };
-
   return (
     <main className="relative bg-[#05070c] text-white overflow-hidden">
+
       <canvas
         id="particles"
         className="fixed inset-0 z-0 pointer-events-none"
       />
+
+      {/* NAVBAR */}
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-black/70 backdrop-blur-md border-b border-[#D4AF37]/20"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
+          <div className="text-[#D4AF37] tracking-widest font-semibold">
+            PANDORA PW
+          </div>
+        </div>
+      </nav>
 
       {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-end overflow-hidden px-8 md:px-20">
@@ -161,11 +188,14 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/80" />
 
         <div className="relative z-20 max-w-2xl text-right space-y-6 pr-4">
-          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37]">
+          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
             PANDORA
           </h1>
 
-          <p className="text-gray-300 text-lg">Perfect World 1.3.6</p>
+          <p className="text-gray-300 text-lg">
+            Perfect World 1.3.6
+          </p>
+
           <p className="text-[#D4AF37] text-sm tracking-wider">
             x150 • PvE / PvP Balance
           </p>
@@ -201,6 +231,68 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ABOUT */}
+      <section
+        id="info-section"
+        ref={addSectionRef}
+        className="py-32 px-8 md:px-20 opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <div className="max-w-5xl mx-auto text-center space-y-6">
+          <h2 className="text-3xl tracking-widest text-[#D4AF37]">
+            О СЕРВЕРЕ
+          </h2>
+          <p className="text-gray-400 leading-relaxed">
+            Pandora PW — имперский сервер Perfect World 1.3.6
+            с балансом PvE и PvP.
+          </p>
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section
+        id="features"
+        ref={addSectionRef}
+        className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
+          ОСОБЕННОСТИ
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+          {[
+            "Баланс PvE / PvP",
+            "Войны кланов",
+            "Авторские модификации",
+          ].map((title, i) => (
+            <div
+              key={i}
+              className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700 hover:border-[#D4AF37]"
+            >
+              <h3 className="text-[#D4AF37] mb-4 tracking-widest">
+                {title}
+              </h3>
+              <p className="text-gray-400 text-sm">
+                Продуманная система и премиальный игровой процесс.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* DOWNLOAD */}
+      <section
+        ref={addSectionRef}
+        className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
+          ГОТОВ ВСТУПИТЬ В PANDORA?
+        </h2>
+
+        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
+          СКАЧАТЬ КЛИЕНТ
+        </button>
       </section>
     </main>
   );
