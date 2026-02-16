@@ -21,7 +21,6 @@ export default function Home() {
   });
 
   const sectionsRef = useRef<HTMLElement[]>([]);
-  const animationRef = useRef<number>();
 
   const addSectionRef = (el: HTMLElement | null) => {
     if (el && !sectionsRef.current.includes(el)) {
@@ -37,12 +36,11 @@ export default function Home() {
       setOffset({ x, y });
     };
 
-    // ================= NAVBAR =================
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
 
-    // ================= INTERSECTION OBSERVER =================
+    // ================= ANIMATION OBSERVER =================
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -66,9 +64,7 @@ export default function Home() {
       { threshold: 0.2 }
     );
 
-    sectionsRef.current.forEach((section) => {
-      observer.observe(section);
-    });
+    sectionsRef.current.forEach((section) => observer.observe(section));
 
     // ================= COUNTDOWN =================
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
@@ -91,20 +87,17 @@ export default function Home() {
     }, 1000);
 
     // ================= GOLD PARTICLES =================
-    const canvas = document.getElementById(
-      "particles"
-    ) as HTMLCanvasElement | null;
+    const canvas = document.getElementById("particles") as HTMLCanvasElement | null;
 
     if (canvas) {
       const ctx = canvas.getContext("2d");
-
       if (ctx) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const particles: Particle[] = [];
 
-        for (let i = 0; i < 85; i++) {
+        for (let i = 0; i < 90; i++) {
           particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
@@ -129,11 +122,11 @@ export default function Home() {
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
             ctx.shadowColor = "#D4AF37";
-            ctx.shadowBlur = 7;
+            ctx.shadowBlur = 8;
             ctx.fill();
           });
 
-          animationRef.current = requestAnimationFrame(animate);
+          requestAnimationFrame(animate);
         };
 
         animate();
@@ -148,17 +141,12 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
       observer.disconnect();
       clearInterval(timer);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, []);
 
   return (
     <main className="relative bg-[#05070c] text-white overflow-hidden">
-
-      <canvas
-        id="particles"
-        className="fixed inset-0 z-0 pointer-events-none"
-      />
+      <canvas id="particles" className="fixed inset-0 z-0 pointer-events-none" />
 
       {/* NAVBAR */}
       <nav
@@ -169,71 +157,109 @@ export default function Home() {
         }`}
       >
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <div
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="text-[#D4AF37] tracking-widest font-semibold cursor-pointer"
-          >
+          <div className="text-[#D4AF37] tracking-widest font-semibold">
             PANDORA PW
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-<section className="relative min-h-screen flex items-center justify-center md:justify-end px-6 md:px-20 z-20 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center md:justify-end px-6 md:px-20 overflow-hidden">
+        <img
+          src="/images/goddess-hero.png"
+          alt="Pandora Goddess"
+          style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+          className="absolute inset-0 w-full h-full object-cover object-center md:object-left scale-110 md:scale-100"
+        />
 
-  {/* Image */}
-  <img
-    src="/images/goddess-hero.png"
-    alt="Pandora Goddess"
-    style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
-    className="
-      absolute inset-0 
-      w-full h-full 
-      object-cover 
-      object-center md:object-left
-      transition-transform duration-200
-    "
-  />
+        <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/80 via-black/60 to-black/90" />
 
-  {/* Dark overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/70 via-black/60 to-black/90" />
+        <div className="relative z-20 w-full max-w-2xl text-center md:text-right space-y-6">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl tracking-[0.25em] md:tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_35px_rgba(212,175,55,0.6)]">
+            PANDORA
+          </h1>
 
-  {/* Content */}
-  <div className="
-    relative z-30 
-    w-full 
-    text-center md:text-right 
-    max-w-2xl 
-    space-y-6
-  ">
-    <h1 className="
-      text-4xl sm:text-6xl md:text-8xl
-      tracking-[0.25em] md:tracking-[0.4em]
-      text-[#D4AF37]
-      drop-shadow-[0_0_30px_rgba(212,175,55,0.6)]
-    ">
-      PANDORA
-    </h1>
+          <p className="text-gray-300 text-base md:text-lg">
+            Perfect World 1.3.6
+          </p>
 
-    <p className="text-gray-300 text-base md:text-lg">
-      Perfect World 1.3.6
-    </p>
+          <p className="text-[#D4AF37] text-sm tracking-wider">
+            x150 • PvE / PvP Balance
+          </p>
 
-    <p className="text-[#D4AF37] text-sm tracking-wider">
-      x150 • PvE / PvP Balance
-    </p>
+          <div className="flex flex-col sm:flex-row justify-center md:justify-end gap-4 pt-4">
+            <button className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_35px_rgba(212,175,55,0.6)]">
+              НАЧАТЬ ИГРУ
+            </button>
 
-    <div className="flex flex-col sm:flex-row justify-center md:justify-end gap-4 pt-4">
-      <button className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
-        НАЧАТЬ ИГРУ
-      </button>
+            <button className="px-8 py-3 border border-gray-600 text-gray-300 tracking-widest hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300">
+              СКАЧАТЬ КЛИЕНТ
+            </button>
+          </div>
+        </div>
+      </section>
 
-      <button className="px-8 py-3 border border-gray-600 text-gray-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300">
-        СКАЧАТЬ КЛИЕНТ
-      </button>
-    </div>
-  </div>
-</section>
+      {/* COUNTDOWN */}
+      <section
+        ref={addSectionRef}
+        className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">
+          ОТКРЫТИЕ СЕРВЕРА
+        </h2>
+
+        <div className="flex justify-center gap-4 md:gap-8 flex-wrap">
+          {[
+            { label: "ДНЕЙ", value: timeLeft.days },
+            { label: "ЧАСОВ", value: timeLeft.hours },
+            { label: "МИНУТ", value: timeLeft.minutes },
+            { label: "СЕКУНД", value: timeLeft.seconds },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="border border-[#D4AF37]/30 px-5 py-4 md:px-8 md:py-6 min-w-[85px] md:min-w-[110px]"
+            >
+              <div className="text-3xl text-[#D4AF37] font-semibold">
+                {item.value}
+              </div>
+              <div className="text-xs text-gray-400 mt-2">
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section
+        id="features"
+        ref={addSectionRef}
+        className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
+          ОСОБЕННОСТИ
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+          {[
+            "Баланс PvE / PvP",
+            "Войны кланов",
+            "Авторские модификации",
+          ].map((title, i) => (
+            <div
+              key={i}
+              className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700 hover:border-[#D4AF37]"
+            >
+              <h3 className="text-[#D4AF37] mb-4 tracking-widest">
+                {title}
+              </h3>
+              <p className="text-gray-400 text-sm">
+                Продуманная система и премиальный игровой процесс.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
