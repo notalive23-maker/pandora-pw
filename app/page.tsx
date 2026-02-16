@@ -179,30 +179,61 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-end overflow-hidden px-8 md:px-20">
-        <img
-          src="/images/goddess-hero.png"
-          alt="Pandora Goddess"
-          style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
-          className="absolute inset-0 w-full h-full object-cover object-left transition-transform duration-200"
-        />
+<section className="relative min-h-screen flex items-center justify-center md:justify-end px-6 md:px-20 z-20 overflow-hidden">
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/80" />
+  {/* Image */}
+  <img
+    src="/images/goddess-hero.png"
+    alt="Pandora Goddess"
+    style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+    className="
+      absolute inset-0 
+      w-full h-full 
+      object-cover 
+      object-center md:object-left
+      transition-transform duration-200
+    "
+  />
 
-        <div className="relative z-20 max-w-2xl text-right space-y-6 pr-4">
-          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
-            PANDORA
-          </h1>
+  {/* Dark overlay */}
+  <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/70 via-black/60 to-black/90" />
 
-          <p className="text-gray-300 text-lg">
-            Perfect World 1.3.6
-          </p>
+  {/* Content */}
+  <div className="
+    relative z-30 
+    w-full 
+    text-center md:text-right 
+    max-w-2xl 
+    space-y-6
+  ">
+    <h1 className="
+      text-4xl sm:text-6xl md:text-8xl
+      tracking-[0.25em] md:tracking-[0.4em]
+      text-[#D4AF37]
+      drop-shadow-[0_0_30px_rgba(212,175,55,0.6)]
+    ">
+      PANDORA
+    </h1>
 
-          <p className="text-[#D4AF37] text-sm tracking-wider">
-            x150 • PvE / PvP Balance
-          </p>
-        </div>
-      </section>
+    <p className="text-gray-300 text-base md:text-lg">
+      Perfect World 1.3.6
+    </p>
+
+    <p className="text-[#D4AF37] text-sm tracking-wider">
+      x150 • PvE / PvP Balance
+    </p>
+
+    <div className="flex flex-col sm:flex-row justify-center md:justify-end gap-4 pt-4">
+      <button className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
+        НАЧАТЬ ИГРУ
+      </button>
+
+      <button className="px-8 py-3 border border-gray-600 text-gray-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300">
+        СКАЧАТЬ КЛИЕНТ
+      </button>
+    </div>
+  </div>
+</section>
     </main>
   );
 }
