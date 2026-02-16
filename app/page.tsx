@@ -235,7 +235,86 @@ export default function Home() {
         </div>
       </section>
 
-      {/* дальше код без изменений (COUNTDOWN, ABOUT, FEATURES, DOWNLOAD) */}
+      {/* COUNTDOWN */}
+      <section ref={addSectionRef} className="py-24 px-8 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000">
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
+          ОТКРЫТИЕ СЕРВЕРА
+        </h2>
+
+        <div className="flex justify-center gap-6 flex-wrap">
+          {[
+            { label: "ДНЕЙ", value: timeLeft.days },
+            { label: "ЧАСОВ", value: timeLeft.hours },
+            { label: "МИНУТ", value: timeLeft.minutes },
+            { label: "СЕКУНД", value: timeLeft.seconds },
+          ].map((item, i) => (
+            <div key={i} className="border border-[#D4AF37]/30 px-8 py-6 min-w-[100px]">
+              <div className="text-3xl text-[#D4AF37] font-semibold">
+                {item.value}
+              </div>
+              <div className="text-xs text-gray-400 mt-2">
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section
+        id="about"
+        ref={addSectionRef}
+        className="py-32 px-8 opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <div className="max-w-5xl mx-auto text-center space-y-6">
+          <h2 className="text-3xl tracking-widest text-[#D4AF37]">
+            О СЕРВЕРЕ
+          </h2>
+          <p className="text-gray-400 leading-relaxed">
+            Pandora PW — имперский сервер Perfect World 1.3.6 с балансом PvE и PvP.
+            Честный рейт x150 и продуманная экономика.
+          </p>
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section
+        id="features"
+        ref={addSectionRef}
+        className="py-32 px-8 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
+          ОСОБЕННОСТИ
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {["Баланс PvE / PvP", "Войны кланов", "Авторские модификации"].map((title, i) => (
+            <div key={i} className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700">
+              <h3 className="text-[#D4AF37] mb-4 tracking-widest">
+                {title}
+              </h3>
+              <p className="text-gray-400 text-sm">
+                Продуманная система и премиальный игровой процесс.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* DOWNLOAD */}
+      <section
+        ref={addSectionRef}
+        className="py-32 px-8 text-center opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
+          ГОТОВ ВСТУПИТЬ В PANDORA?
+        </h2>
+
+        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
+          Скачать клиент
+        </button>
+      </section>
+
     </main>
   );
 }
