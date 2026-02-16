@@ -40,7 +40,7 @@ export default function Home() {
       setScrolled(window.scrollY > 50);
     };
 
-    // ================= ANIMATION OBSERVER =================
+    // ================= OBSERVER =================
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -51,7 +51,9 @@ export default function Home() {
           el.classList.remove("opacity-0", "translate-y-10");
 
           if (el.id === "features") {
-            const cards = el.querySelectorAll<HTMLElement>(".feature-card");
+            const cards =
+              el.querySelectorAll<HTMLElement>(".feature-card");
+
             cards.forEach((card, index) => {
               setTimeout(() => {
                 card.classList.add("opacity-100", "translate-y-0");
@@ -64,7 +66,9 @@ export default function Home() {
       { threshold: 0.2 }
     );
 
-    sectionsRef.current.forEach((section) => observer.observe(section));
+    sectionsRef.current.forEach((section) => {
+      observer.observe(section);
+    });
 
     // ================= COUNTDOWN =================
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
@@ -87,50 +91,57 @@ export default function Home() {
     }, 1000);
 
     // ================= GOLD PARTICLES =================
-    const canvas = document.getElementById("particles") as HTMLCanvasElement | null;
+    const canvas = document.getElementById(
+      "particles"
+    ) as HTMLCanvasElement | null;
 
     if (canvas) {
       const ctx = canvas.getContext("2d");
-      if (ctx) {
+      if (!ctx) return;
+
+      const resizeCanvas = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+      };
 
-        const particles: Particle[] = [];
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
 
-        for (let i = 0; i < 90; i++) {
-          particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 2,
-            speedY: Math.random() * 0.5 + 0.2,
-            opacity: Math.random() * 0.4 + 0.1,
-          });
-        }
+      const particles: Particle[] = [];
 
-        const animate = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          particles.forEach((p) => {
-            p.y -= p.speedY;
-
-            if (p.y < 0) {
-              p.y = canvas.height;
-              p.x = Math.random() * canvas.width;
-            }
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
-            ctx.shadowColor = "#D4AF37";
-            ctx.shadowBlur = 8;
-            ctx.fill();
-          });
-
-          requestAnimationFrame(animate);
-        };
-
-        animate();
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 0.5,
+          speedY: Math.random() * 0.6 + 0.2,
+          opacity: Math.random() * 0.5 + 0.2,
+        });
       }
+
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p) => {
+          p.y -= p.speedY;
+
+          if (p.y < 0) {
+            p.y = canvas.height;
+            p.x = Math.random() * canvas.width;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
+          ctx.shadowColor = "#D4AF37";
+          ctx.shadowBlur = 10;
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      };
+
+      animate();
     }
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -146,7 +157,11 @@ export default function Home() {
 
   return (
     <main className="relative bg-[#05070c] text-white overflow-hidden">
-      <canvas id="particles" className="fixed inset-0 z-0 pointer-events-none" />
+
+      <canvas
+        id="particles"
+        className="fixed inset-0 z-0 pointer-events-none"
+      />
 
       {/* NAVBAR */}
       <nav
@@ -164,38 +179,29 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center md:justify-end px-6 md:px-20 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center md:justify-end overflow-hidden px-6 md:px-20">
+
         <img
           src="/images/goddess-hero.png"
           alt="Pandora Goddess"
           style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
-          className="absolute inset-0 w-full h-full object-cover object-center md:object-left scale-110 md:scale-100"
+          className="absolute inset-0 w-full h-full object-cover object-center md:object-left transition-transform duration-200"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/80 via-black/60 to-black/90" />
+        <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/70 via-black/50 to-black/80" />
 
-        <div className="relative z-20 w-full max-w-2xl text-center md:text-right space-y-6">
-          <h1 className="text-4xl sm:text-6xl md:text-8xl tracking-[0.25em] md:tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_35px_rgba(212,175,55,0.6)]">
+        <div className="relative z-20 max-w-2xl text-center md:text-right space-y-6">
+          <h1 className="text-5xl sm:text-6xl md:text-8xl tracking-[0.3em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.5)]">
             PANDORA
           </h1>
 
-          <p className="text-gray-300 text-base md:text-lg">
+          <p className="text-gray-300 text-lg">
             Perfect World 1.3.6
           </p>
 
           <p className="text-[#D4AF37] text-sm tracking-wider">
             x150 • PvE / PvP Balance
           </p>
-
-          <div className="flex flex-col sm:flex-row justify-center md:justify-end gap-4 pt-4">
-            <button className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_35px_rgba(212,175,55,0.6)]">
-              НАЧАТЬ ИГРУ
-            </button>
-
-            <button className="px-8 py-3 border border-gray-600 text-gray-300 tracking-widest hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300">
-              СКАЧАТЬ КЛИЕНТ
-            </button>
-          </div>
         </div>
       </section>
 
@@ -208,7 +214,7 @@ export default function Home() {
           ОТКРЫТИЕ СЕРВЕРА
         </h2>
 
-        <div className="flex justify-center gap-4 md:gap-8 flex-wrap">
+        <div className="flex justify-center gap-8 flex-wrap">
           {[
             { label: "ДНЕЙ", value: timeLeft.days },
             { label: "ЧАСОВ", value: timeLeft.hours },
@@ -217,7 +223,7 @@ export default function Home() {
           ].map((item, i) => (
             <div
               key={i}
-              className="border border-[#D4AF37]/30 px-5 py-4 md:px-8 md:py-6 min-w-[85px] md:min-w-[110px]"
+              className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px]"
             >
               <div className="text-3xl text-[#D4AF37] font-semibold">
                 {item.value}
@@ -227,6 +233,29 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section
+        id="info-section"
+        ref={addSectionRef}
+        className="py-32 px-8 md:px-20 opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <div className="max-w-5xl mx-auto text-center space-y-6">
+          <h2 className="text-3xl tracking-widest text-[#D4AF37]">
+            О СЕРВЕРЕ
+          </h2>
+
+          <p className="text-gray-400 leading-relaxed">
+            Pandora PW — имперский сервер Perfect World 1.3.6
+            с балансом PvE и PvP.
+          </p>
+
+          <p className="text-gray-400 leading-relaxed">
+            Честный рейт x150, продуманная экономика,
+            активное сообщество и регулярные обновления.
+          </p>
         </div>
       </section>
 
@@ -260,6 +289,21 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* DOWNLOAD */}
+      <section
+        ref={addSectionRef}
+        className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000"
+      >
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
+          ГОТОВ ВСТУПИТЬ В PANDORA?
+        </h2>
+
+        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
+          СКАЧАТЬ КЛИЕНТ
+        </button>
+      </section>
+
     </main>
   );
 }
