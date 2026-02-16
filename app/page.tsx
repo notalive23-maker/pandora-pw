@@ -66,13 +66,57 @@ export default function Home() {
     handleScroll();
 
     // === GOLD PARTICLES ===
-    const canvas = document.getElementById("particles") as HTMLCanvasElement;
-    const ctx = canvas?.getContext("2d");
+   const canvas = document.getElementById("particles") as HTMLCanvasElement | null;
 
-    if (canvas && ctx) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+if (!canvas) return;
 
+const ctx = canvas.getContext("2d");
+if (!ctx) return;
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const particles: {
+  x: number;
+  y: number;
+  radius: number;
+  speedY: number;
+  opacity: number;
+}[] = [];
+
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 2,
+    speedY: Math.random() * 0.5 + 0.2,
+    opacity: Math.random() * 0.4 + 0.1,
+  });
+}
+
+const animate = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((p) => {
+    p.y -= p.speedY;
+
+    if (p.y < 0) {
+      p.y = canvas.height;
+      p.x = Math.random() * canvas.width;
+    }
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
+    ctx.shadowColor = "#D4AF37";
+    ctx.shadowBlur = 6;
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
+};
+
+animate();
       const particles: any[] = [];
 
       for (let i = 0; i < 80; i++) {
