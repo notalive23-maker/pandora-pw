@@ -29,49 +29,30 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // ================= MOUSE PARALLAX =================
     const handleMouseMove = (e: MouseEvent) => {
-      const x = (window.innerWidth / 2 - e.clientX) / 80;
-      const y = (window.innerHeight / 2 - e.clientY) / 80;
+      const x = (window.innerWidth / 2 - e.clientX) / 60;
+      const y = (window.innerHeight / 2 - e.clientY) / 60;
       setOffset({ x, y });
     };
 
-    // ================= NAVBAR SCROLL =================
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 40);
     };
 
-    // ================= INTERSECTION OBSERVER =================
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-
           const el = entry.target as HTMLElement;
           el.classList.add("opacity-100", "translate-y-0");
           el.classList.remove("opacity-0", "translate-y-10");
-
-          if (el.id === "features") {
-            const cards =
-              el.querySelectorAll<HTMLElement>(".feature-card");
-
-            cards.forEach((card, index) => {
-              setTimeout(() => {
-                card.classList.add("opacity-100", "translate-y-0");
-                card.classList.remove("opacity-0", "translate-y-10");
-              }, index * 180);
-            });
-          }
         });
       },
       { threshold: 0.2 }
     );
 
-    sectionsRef.current.forEach((section) => {
-      observer.observe(section);
-    });
+    sectionsRef.current.forEach((section) => observer.observe(section));
 
-    // ================= COUNTDOWN =================
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
 
     const timer = setInterval(() => {
@@ -91,7 +72,6 @@ export default function Home() {
       });
     }, 1000);
 
-    // ================= GOLD PARTICLES =================
     const canvas = document.getElementById(
       "particles"
     ) as HTMLCanvasElement | null;
@@ -100,19 +80,18 @@ export default function Home() {
       const context = canvas.getContext("2d");
       if (context) {
         const ctx = context;
-
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const particles: Particle[] = [];
 
-        for (let i = 0; i < 90; i++) {
+        for (let i = 0; i < 100; i++) {
           particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             radius: Math.random() * 2,
-            speedY: Math.random() * 0.5 + 0.2,
-            opacity: Math.random() * 0.4 + 0.1,
+            speedY: Math.random() * 0.4 + 0.2,
+            opacity: Math.random() * 0.5 + 0.1,
           });
         }
 
@@ -131,7 +110,7 @@ export default function Home() {
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
             ctx.shadowColor = "#D4AF37";
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 12;
             ctx.fill();
           });
 
@@ -154,30 +133,27 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative bg-[#05070c] text-white overflow-hidden">
+    <main className="relative bg-gradient-to-br from-[#05070c] via-[#0b0e14] to-[#0a0d13] text-white overflow-hidden">
 
-      <canvas
-        id="particles"
-        className="fixed inset-0 z-0 pointer-events-none"
-      />
+      <canvas id="particles" className="fixed inset-0 z-10 pointer-events-none" />
 
       {/* NAVBAR */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-black/70 backdrop-blur-md border-b border-[#D4AF37]/20"
-            : "bg-transparent"
-        }`}
-      >
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        scrolled ? "bg-black/60 backdrop-blur-xl border-b border-[#D4AF37]/20" : "bg-transparent"
+      }`}>
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <div className="text-[#D4AF37] tracking-widest font-semibold">
+          <div className="text-[#D4AF37] tracking-widest font-semibold text-lg">
             PANDORA PW
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-end overflow-hidden px-8 md:px-20">
+      <section className="relative min-h-screen flex items-center justify-end px-8 md:px-20 z-20 overflow-hidden">
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(212,175,55,0.08),transparent_60%)] animate-pulse" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(212,175,55,0.05),transparent_70%)]" />
+
         <img
           src="/images/goddess-hero.png"
           alt="Pandora Goddess"
@@ -185,32 +161,22 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover object-left transition-transform duration-200"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/90" />
 
-        <div className="relative z-20 max-w-2xl text-right space-y-6 pr-4">
-          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
+        <div className="relative z-30 max-w-2xl text-right space-y-6 pr-4">
+          <h1 className="text-7xl md:text-9xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_40px_rgba(212,175,55,0.7)] animate-[pulse_4s_infinite]">
             PANDORA
           </h1>
 
           <p className="text-gray-300 text-lg">
             Perfect World 1.3.6
           </p>
-
-          <p className="text-[#D4AF37] text-sm tracking-wider">
-            x150 • PvE / PvP Balance
-          </p>
         </div>
       </section>
 
       {/* COUNTDOWN */}
-      <section
-        ref={addSectionRef}
-        className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">
-          ОТКРЫТИЕ СЕРВЕРА
-        </h2>
-
+      <section ref={addSectionRef} className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000 relative z-20">
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">ОТКРЫТИЕ СЕРВЕРА</h2>
         <div className="flex justify-center gap-8 flex-wrap">
           {[
             { label: "ДНЕЙ", value: timeLeft.days },
@@ -218,61 +184,31 @@ export default function Home() {
             { label: "МИНУТ", value: timeLeft.minutes },
             { label: "СЕКУНД", value: timeLeft.seconds },
           ].map((item, i) => (
-            <div
-              key={i}
-              className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px]"
-            >
-              <div className="text-3xl text-[#D4AF37] font-semibold">
-                {item.value}
-              </div>
-              <div className="text-xs text-gray-400 mt-2">
-                {item.label}
-              </div>
+            <div key={i} className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px] hover:border-[#D4AF37] transition-all duration-300">
+              <div className="text-3xl text-[#D4AF37] font-semibold">{item.value}</div>
+              <div className="text-xs text-gray-400 mt-2">{item.label}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* ABOUT */}
-      <section
-        id="info-section"
-        ref={addSectionRef}
-        className="py-32 px-8 md:px-20 opacity-0 translate-y-10 transition-all duration-1000"
-      >
+      <section ref={addSectionRef} className="py-32 px-8 md:px-20 opacity-0 translate-y-10 transition-all duration-1000 relative z-20">
         <div className="max-w-5xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl tracking-widest text-[#D4AF37]">
-            О СЕРВЕРЕ
-          </h2>
+          <h2 className="text-3xl tracking-widest text-[#D4AF37]">О СЕРВЕРЕ</h2>
           <p className="text-gray-400 leading-relaxed">
-            Pandora PW — имперский сервер Perfect World 1.3.6
-            с балансом PvE и PvP.
+            Pandora PW — имперский сервер Perfect World 1.3.6 с балансом PvE и PvP.
           </p>
         </div>
       </section>
 
       {/* FEATURES */}
-      <section
-        id="features"
-        ref={addSectionRef}
-        className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
-          ОСОБЕННОСТИ
-        </h2>
-
+      <section ref={addSectionRef} className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000 relative z-20">
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">ОСОБЕННОСТИ</h2>
         <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {[
-            "Баланс PvE / PvP",
-            "Войны кланов",
-            "Авторские модификации",
-          ].map((title, i) => (
-            <div
-              key={i}
-              className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700 hover:border-[#D4AF37]"
-            >
-              <h3 className="text-[#D4AF37] mb-4 tracking-widest">
-                {title}
-              </h3>
+          {["Баланс PvE / PvP", "Войны кланов", "Авторские модификации"].map((title, i) => (
+            <div key={i} className="border border-[#D4AF37]/20 p-8 hover:border-[#D4AF37] transition-all duration-300">
+              <h3 className="text-[#D4AF37] mb-4 tracking-widest">{title}</h3>
               <p className="text-gray-400 text-sm">
                 Продуманная система и премиальный игровой процесс.
               </p>
@@ -282,18 +218,13 @@ export default function Home() {
       </section>
 
       {/* DOWNLOAD */}
-      <section
-        ref={addSectionRef}
-        className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
-          ГОТОВ ВСТУПИТЬ В PANDORA?
-        </h2>
-
-        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
+      <section ref={addSectionRef} className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000 relative z-20">
+        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">ГОТОВ ВСТУПИТЬ В PANDORA?</h2>
+        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.8)]">
           СКАЧАТЬ КЛИЕНТ
         </button>
       </section>
+
     </main>
   );
 }
