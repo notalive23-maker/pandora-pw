@@ -2,6 +2,14 @@
 
 import { useEffect, useState, useRef } from "react";
 
+type Particle = {
+  x: number;
+  y: number;
+  radius: number;
+  speedY: number;
+  opacity: number;
+};
+
 export default function Home() {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [scrolled, setScrolled] = useState(false);
@@ -12,11 +20,9 @@ export default function Home() {
     seconds: 0,
   });
 
-  const animatedSections = useRef<HTMLElement[]>([]);
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
-  /* =========================
-     PARALLAX + NAVBAR
-  ========================== */
+  /* ================= NAVBAR + PARALLAX ================= */
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const x = (window.innerWidth / 2 - e.clientX) / 60;
@@ -37,14 +43,12 @@ export default function Home() {
     };
   }, []);
 
-  /* =========================
-     COUNTDOWN
-  ========================== */
+  /* ================= COUNTDOWN ================= */
   useEffect(() => {
     const targetDate = new Date("2026-03-06T00:00:00").getTime();
 
     const timer = setInterval(() => {
-      const now = new Date().getTime();
+      const now = Date.now();
       const distance = targetDate - now;
 
       if (distance <= 0) {
@@ -63,9 +67,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  /* =========================
-     INTERSECTION OBSERVER
-  ========================== */
+  /* ================= INTERSECTION OBSERVER ================= */
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -78,16 +80,14 @@ export default function Home() {
       { threshold: 0.15 }
     );
 
-    animatedSections.current.forEach((el) => {
+    sectionRefs.current.forEach((el) => {
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
   }, []);
 
-  /* =========================
-     GOLD PARTICLES (SAFE)
-  ========================== */
+  /* ================= GOLD PARTICLES ================= */
   useEffect(() => {
     const canvas = document.getElementById("particles");
     if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -97,14 +97,6 @@ export default function Home() {
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    type Particle = {
-      x: number;
-      y: number;
-      radius: number;
-      speedY: number;
-      opacity: number;
-    };
 
     const particles: Particle[] = [];
 
@@ -123,7 +115,6 @@ export default function Home() {
 
       particles.forEach((p) => {
         p.y -= p.speedY;
-
         if (p.y < 0) {
           p.y = canvas.height;
           p.x = Math.random() * canvas.width;
@@ -143,12 +134,8 @@ export default function Home() {
     animate();
   }, []);
 
-  /* =========================
-     JSX
-  ========================== */
   return (
     <main className="relative bg-[#05070c] text-white overflow-hidden">
-
       <canvas
         id="particles"
         className="fixed inset-0 z-0 pointer-events-none"
@@ -162,45 +149,33 @@ export default function Home() {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <div
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="text-[#D4AF37] tracking-widest font-semibold cursor-pointer hover:scale-105 transition"
-          >
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="text-[#D4AF37] tracking-widest font-semibold cursor-pointer hover:scale-105 transition">
             PANDORA PW
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-end overflow-hidden px-8 md:px-20">
+      <section className="relative min-h-screen flex items-center justify-end px-8 md:px-20 overflow-hidden">
         <img
           src="/images/goddess-hero.png"
           alt="Pandora Goddess"
           style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
           className="absolute inset-0 w-full h-full object-cover object-left transition-transform duration-200"
         />
-
-        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/90" />
-
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/50 to-black/90" />
         <div className="relative z-20 max-w-2xl text-right space-y-6 pr-4">
-          <h1 className="text-7xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_35px_rgba(212,175,55,0.6)]">
+          <h1 className="text-7xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_40px_rgba(212,175,55,0.6)]">
             PANDORA
           </h1>
-
           <p className="text-gray-300 text-lg">Perfect World 1.3.6</p>
-
-          <div className="flex justify-end gap-5 pt-6">
-            <button className="px-10 py-3 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-              НАЧАТЬ ИГРУ
-            </button>
-          </div>
         </div>
       </section>
 
       {/* COUNTDOWN */}
       <section
-        ref={(el) => el && animatedSections.current.push(el)}
+        ref={(el) => (sectionRefs.current[0] = el)}
         className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
       >
         <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">
@@ -231,7 +206,7 @@ export default function Home() {
 
       {/* FEATURES */}
       <section
-        ref={(el) => el && animatedSections.current.push(el)}
+        ref={(el) => (sectionRefs.current[1] = el)}
         className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
       >
         <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
