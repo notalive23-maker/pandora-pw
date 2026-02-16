@@ -173,22 +173,15 @@ export default function Home() {
               <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
             </button>
 
-            <a
-              href="https://t.me/PandoraPw2026"
-              target="_blank"
-              className="relative group transition-all duration-300 hover:text-[#D4AF37]"
-            >
+            <button className="relative group transition-all duration-300 hover:text-[#D4AF37]">
               Форум
               <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </a>
+            </button>
 
-            <a
-              href="/account"
-              className="relative group transition-all duration-300 hover:text-[#D4AF37]"
-            >
+            <button className="relative group transition-all duration-300 hover:text-[#D4AF37]">
               Личный кабинет
               <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </a>
+            </button>
 
           </div>
         </div>
@@ -220,17 +213,19 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 pt-6 justify-center md:justify-end">
+
+            <button className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
+              Стартовый гайд
+            </button>
+
             <a
               href="https://t.me/PandoraPw2026"
               target="_blank"
-              className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition"
+              className="px-8 py-3 border border-gray-600 text-gray-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition inline-block"
             >
               Telegram
             </a>
 
-            <button className="px-8 py-3 border border-gray-600 text-gray-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition">
-              Скачать клиент
-            </button>
           </div>
         </div>
       </section>
