@@ -75,7 +75,7 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    // === GOLD PARTICLES (FIXED SAFE VERSION) ===
+    // ===== GOLD PARTICLES (SAFE FOR VERCEL) =====
     const canvas = document.getElementById("particles");
 
     if (!(canvas instanceof HTMLCanvasElement)) return;
@@ -136,6 +136,7 @@ export default function Home() {
         className="fixed inset-0 z-0 pointer-events-none"
       />
 
+      {/* NAVBAR */}
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
           scrolled
@@ -155,6 +156,7 @@ export default function Home() {
         </div>
       </nav>
 
+      {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-end overflow-hidden px-8 md:px-20">
         <img
           src="/images/goddess-hero.png"
@@ -168,9 +170,17 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/40 to-black/80" />
 
         <div className="relative z-20 max-w-2xl text-right space-y-6 pr-4">
-          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37]">
+          <h1 className="text-6xl md:text-8xl tracking-[0.4em] text-[#D4AF37] drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
             PANDORA
           </h1>
+
+          <p className="text-gray-300 text-lg">
+            Perfect World 1.3.6
+          </p>
+
+          <p className="text-[#D4AF37] text-sm tracking-wider">
+            x150 • PvE / PvP Balance
+          </p>
         </div>
       </section>
     </main>
