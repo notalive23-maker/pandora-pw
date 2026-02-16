@@ -21,6 +21,7 @@ export default function Home() {
   });
 
   const sectionsRef = useRef<HTMLElement[]>([]);
+  const animationRef = useRef<number>();
 
   const addSectionRef = (el: HTMLElement | null) => {
     if (el && !sectionsRef.current.includes(el)) {
@@ -29,14 +30,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // ================= MOUSE PARALLAX =================
+    // ================= PARALLAX =================
     const handleMouseMove = (e: MouseEvent) => {
       const x = (window.innerWidth / 2 - e.clientX) / 80;
       const y = (window.innerHeight / 2 - e.clientY) / 80;
       setOffset({ x, y });
     };
 
-    // ================= NAVBAR SCROLL =================
+    // ================= NAVBAR =================
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
@@ -52,9 +53,7 @@ export default function Home() {
           el.classList.remove("opacity-0", "translate-y-10");
 
           if (el.id === "features") {
-            const cards =
-              el.querySelectorAll<HTMLElement>(".feature-card");
-
+            const cards = el.querySelectorAll<HTMLElement>(".feature-card");
             cards.forEach((card, index) => {
               setTimeout(() => {
                 card.classList.add("opacity-100", "translate-y-0");
@@ -97,16 +96,15 @@ export default function Home() {
     ) as HTMLCanvasElement | null;
 
     if (canvas) {
-      const context = canvas.getContext("2d");
-      if (context) {
-        const ctx = context;
+      const ctx = canvas.getContext("2d");
 
+      if (ctx) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const particles: Particle[] = [];
 
-        for (let i = 0; i < 90; i++) {
+        for (let i = 0; i < 85; i++) {
           particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
@@ -131,11 +129,11 @@ export default function Home() {
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
             ctx.shadowColor = "#D4AF37";
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 7;
             ctx.fill();
           });
 
-          requestAnimationFrame(animate);
+          animationRef.current = requestAnimationFrame(animate);
         };
 
         animate();
@@ -150,6 +148,7 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
       observer.disconnect();
       clearInterval(timer);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, []);
 
@@ -170,7 +169,10 @@ export default function Home() {
         }`}
       >
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <div className="text-[#D4AF37] tracking-widest font-semibold">
+          <div
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="text-[#D4AF37] tracking-widest font-semibold cursor-pointer"
+          >
             PANDORA PW
           </div>
         </div>
@@ -200,99 +202,6 @@ export default function Home() {
             x150 • PvE / PvP Balance
           </p>
         </div>
-      </section>
-
-      {/* COUNTDOWN */}
-      <section
-        ref={addSectionRef}
-        className="py-24 px-8 md:px-20 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-6">
-          ОТКРЫТИЕ СЕРВЕРА
-        </h2>
-
-        <div className="flex justify-center gap-8 flex-wrap">
-          {[
-            { label: "ДНЕЙ", value: timeLeft.days },
-            { label: "ЧАСОВ", value: timeLeft.hours },
-            { label: "МИНУТ", value: timeLeft.minutes },
-            { label: "СЕКУНД", value: timeLeft.seconds },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="border border-[#D4AF37]/30 px-8 py-6 min-w-[110px]"
-            >
-              <div className="text-3xl text-[#D4AF37] font-semibold">
-                {item.value}
-              </div>
-              <div className="text-xs text-gray-400 mt-2">
-                {item.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ABOUT */}
-      <section
-        id="info-section"
-        ref={addSectionRef}
-        className="py-32 px-8 md:px-20 opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <div className="max-w-5xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl tracking-widest text-[#D4AF37]">
-            О СЕРВЕРЕ
-          </h2>
-          <p className="text-gray-400 leading-relaxed">
-            Pandora PW — имперский сервер Perfect World 1.3.6
-            с балансом PvE и PvP.
-          </p>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section
-        id="features"
-        ref={addSectionRef}
-        className="py-32 px-8 md:px-20 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
-          ОСОБЕННОСТИ
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {[
-            "Баланс PvE / PvP",
-            "Войны кланов",
-            "Авторские модификации",
-          ].map((title, i) => (
-            <div
-              key={i}
-              className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700 hover:border-[#D4AF37]"
-            >
-              <h3 className="text-[#D4AF37] mb-4 tracking-widest">
-                {title}
-              </h3>
-              <p className="text-gray-400 text-sm">
-                Продуманная система и премиальный игровой процесс.
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* DOWNLOAD */}
-      <section
-        ref={addSectionRef}
-        className="py-32 px-8 md:px-20 text-center opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
-          ГОТОВ ВСТУПИТЬ В PANDORA?
-        </h2>
-
-        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all duration-300">
-          СКАЧАТЬ КЛИЕНТ
-        </button>
       </section>
     </main>
   );
