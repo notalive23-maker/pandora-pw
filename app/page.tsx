@@ -132,39 +132,106 @@ export default function Home() {
       <canvas id="particles" className="fixed inset-0 z-0 pointer-events-none" />
 
       {/* NAVBAR */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-black/70 backdrop-blur-md border-b border-[#D4AF37]/20"
-          : "bg-transparent"
-      }`}>
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="text-[#D4AF37] tracking-widest font-semibold"
-          >
-            PANDORA
-          </button>
+<nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+  scrolled
+    ? "bg-black/70 backdrop-blur-md border-b border-[#D4AF37]/20"
+    : "bg-transparent"
+}`}>
+  <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
 
-          <div className="hidden md:flex gap-8 text-sm tracking-wider text-gray-300">
-            <button
-              onClick={() =>
-                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="hover:text-[#D4AF37] transition"
-            >
-              О сервере
-            </button>
-            <button className="hover:text-[#D4AF37] transition">Форум</button>
-            <a
-              href="https://t.me/PandoraPw2026"
-              target="_blank"
-              className="hover:text-[#D4AF37] transition"
-            >
-              Telegram
-            </a>
-          </div>
-        </div>
-      </nav>
+    {/* LOGO */}
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="text-[#D4AF37] tracking-widest font-semibold"
+    >
+      PANDORA
+    </button>
+
+    {/* DESKTOP MENU */}
+    <div className="hidden md:flex gap-6">
+
+      <button
+        onClick={() =>
+          document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
+        }
+        className="px-5 py-2 border border-[#D4AF37]/40 text-[#D4AF37]
+        hover:bg-[#D4AF37] hover:text-black
+        hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]
+        transition-all duration-300 text-sm tracking-widest"
+      >
+        О сервере
+      </button>
+
+      <button
+        className="px-5 py-2 border border-[#D4AF37]/40 text-[#D4AF37]
+        hover:bg-[#D4AF37] hover:text-black
+        hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]
+        transition-all duration-300 text-sm tracking-widest"
+      >
+        Форум
+      </button>
+
+      <a
+        href="https://t.me/PandoraPw2026"
+        target="_blank"
+        className="px-5 py-2 border border-[#D4AF37]/40 text-[#D4AF37]
+        hover:bg-[#D4AF37] hover:text-black
+        hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]
+        transition-all duration-300 text-sm tracking-widest"
+      >
+        Telegram
+      </a>
+
+    </div>
+
+    {/* MOBILE BURGER */}
+    <div className="md:hidden">
+      <button
+        onClick={() => {
+          const menu = document.getElementById("mobile-menu");
+          menu?.classList.toggle("hidden");
+        }}
+        className="text-[#D4AF37] text-2xl"
+      >
+        ☰
+      </button>
+    </div>
+
+  </div>
+
+  {/* MOBILE MENU */}
+  <div
+    id="mobile-menu"
+    className="hidden md:hidden bg-black/90 backdrop-blur-md border-t border-[#D4AF37]/20 px-6 py-6 space-y-4"
+  >
+    <button
+      onClick={() =>
+        document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
+      }
+      className="block w-full text-left px-4 py-3 border border-[#D4AF37]/40 text-[#D4AF37]
+      hover:bg-[#D4AF37] hover:text-black transition-all duration-300"
+    >
+      О сервере
+    </button>
+
+    <button
+      className="block w-full text-left px-4 py-3 border border-[#D4AF37]/40 text-[#D4AF37]
+      hover:bg-[#D4AF37] hover:text-black transition-all duration-300"
+    >
+      Форум
+    </button>
+
+    <a
+      href="https://t.me/PandoraPw2026"
+      target="_blank"
+      className="block w-full text-left px-4 py-3 border border-[#D4AF37]/40 text-[#D4AF37]
+      hover:bg-[#D4AF37] hover:text-black transition-all duration-300"
+    >
+      Telegram
+    </a>
+  </div>
+
+</nav>
 
       {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center md:justify-end overflow-hidden px-6 md:px-20">
