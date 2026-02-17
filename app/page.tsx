@@ -43,20 +43,9 @@ export default function Home() {
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-
           const el = entry.target as HTMLElement;
           el.classList.add("opacity-100", "translate-y-0");
           el.classList.remove("opacity-0", "translate-y-10");
-
-          if (el.id === "features") {
-            const cards = el.querySelectorAll<HTMLElement>(".feature-card");
-            cards.forEach((card, index) => {
-              setTimeout(() => {
-                card.classList.add("opacity-100", "translate-y-0");
-                card.classList.remove("opacity-0", "translate-y-10");
-              }, index * 150);
-            });
-          }
         });
       },
       { threshold: 0.2 }
@@ -71,7 +60,6 @@ export default function Home() {
     const timer = setInterval(() => {
       const now = Date.now();
       const distance = targetDate - now;
-
       if (distance <= 0) {
         clearInterval(timer);
         return;
@@ -107,15 +95,12 @@ export default function Home() {
 
         const animate = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-
           particles.forEach((p) => {
             p.y -= p.speedY;
-
             if (p.y < 0) {
               p.y = canvas.height;
               p.x = Math.random() * canvas.width;
             }
-
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
@@ -123,7 +108,6 @@ export default function Home() {
             ctx.shadowBlur = 6;
             ctx.fill();
           });
-
           requestAnimationFrame(animate);
         };
 
@@ -162,34 +146,28 @@ export default function Home() {
           </button>
 
           <div className="hidden md:flex gap-8 text-sm tracking-wider text-gray-300">
-
             <button
               onClick={() =>
                 document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
               }
-              className="relative group transition-all duration-300 hover:text-[#D4AF37]"
+              className="hover:text-[#D4AF37] transition"
             >
               О сервере
-              <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
             </button>
-
-            <button className="relative group transition-all duration-300 hover:text-[#D4AF37]">
-              Форум
-              <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </button>
-
-            <button className="relative group transition-all duration-300 hover:text-[#D4AF37]">
-              Личный кабинет
-              <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </button>
-
+            <button className="hover:text-[#D4AF37] transition">Форум</button>
+            <a
+              href="https://t.me/PandoraPw2026"
+              target="_blank"
+              className="hover:text-[#D4AF37] transition"
+            >
+              Telegram
+            </a>
           </div>
         </div>
       </nav>
 
       {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center md:justify-end overflow-hidden px-6 md:px-20">
-
         <img
           src="/images/goddess-hero.png"
           alt="Pandora"
@@ -213,19 +191,19 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 pt-6 justify-center md:justify-end">
-
-            <button className="px-8 py-3 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
-              Стартовый гайд
+            <button className="px-10 py-4 border border-[#D4AF37] text-[#D4AF37]
+            hover:bg-[#D4AF37] hover:text-black
+            hover:shadow-[0_0_30px_rgba(212,175,55,0.8)]
+            transition-all duration-300">
+              Личный кабинет
             </button>
 
-            <a
-              href="https://t.me/PandoraPw2026"
-              target="_blank"
-              className="px-8 py-3 border border-gray-600 text-gray-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition inline-block"
-            >
-              Telegram
-            </a>
-
+            <button className="px-10 py-4 border border-[#D4AF37] text-[#D4AF37]
+            hover:bg-[#D4AF37] hover:text-black
+            hover:shadow-[0_0_30px_rgba(212,175,55,1)]
+            transition-all duration-300">
+              Скачать игру
+            </button>
           </div>
         </div>
       </section>
@@ -256,11 +234,7 @@ export default function Home() {
       </section>
 
       {/* ABOUT */}
-      <section
-        id="about"
-        ref={addSectionRef}
-        className="py-32 px-8 opacity-0 translate-y-10 transition-all duration-1000"
-      >
+      <section id="about" ref={addSectionRef} className="py-32 px-8 opacity-0 translate-y-10 transition-all duration-1000">
         <div className="max-w-5xl mx-auto text-center space-y-6">
           <h2 className="text-3xl tracking-widest text-[#D4AF37]">
             О СЕРВЕРЕ
@@ -273,18 +247,14 @@ export default function Home() {
       </section>
 
       {/* FEATURES */}
-      <section
-        id="features"
-        ref={addSectionRef}
-        className="py-32 px-8 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000"
-      >
+      <section id="features" ref={addSectionRef} className="py-32 px-8 bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000">
         <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-12 text-center">
           ОСОБЕННОСТИ
         </h2>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {["Баланс PvE / PvP", "Войны кланов", "Авторские модификации"].map((title, i) => (
-            <div key={i} className="feature-card border border-[#D4AF37]/20 p-8 opacity-0 translate-y-10 transition-all duration-700">
+            <div key={i} className="border border-[#D4AF37]/20 p-8">
               <h3 className="text-[#D4AF37] mb-4 tracking-widest">
                 {title}
               </h3>
@@ -296,18 +266,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DOWNLOAD */}
-      <section
-        ref={addSectionRef}
-        className="py-32 px-8 text-center opacity-0 translate-y-10 transition-all duration-1000"
-      >
-        <h2 className="text-4xl tracking-widest text-[#D4AF37] mb-8">
-          ГОТОВ ВСТУПИТЬ В PANDORA?
+      {/* MARATHONS */}
+      <section ref={addSectionRef} className="py-32 px-8 text-center bg-[#0b0e14] opacity-0 translate-y-10 transition-all duration-1000">
+        <h2 className="text-4xl md:text-5xl tracking-widest text-[#D4AF37] mb-16">
+          МАРАФОНЫ
         </h2>
 
-        <button className="px-12 py-4 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition">
-          Скачать клиент
-        </button>
+        <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-6xl mx-auto">
+          <button className="flex-1 px-10 py-12 border border-[#D4AF37] text-[#D4AF37] flex flex-col items-center justify-center hover:bg-[#D4AF37] hover:text-black hover:shadow-[0_0_35px_rgba(212,175,55,0.9)] transition-all duration-300">
+            <span className="text-xl tracking-widest mb-4">Новичка</span>
+            <span className="text-2xl font-semibold">10 000 ₽</span>
+          </button>
+
+          <button className="flex-1 px-10 py-12 border border-[#D4AF37] text-[#D4AF37] flex flex-col items-center justify-center hover:bg-[#D4AF37] hover:text-black hover:shadow-[0_0_35px_rgba(212,175,55,0.9)] transition-all duration-300">
+            <span className="text-xl tracking-widest mb-4">PvP Турнир</span>
+            <span className="text-2xl font-semibold">10 000 ₽</span>
+          </button>
+
+          <button className="flex-1 px-10 py-12 border border-[#D4AF37] text-[#D4AF37] flex flex-col items-center justify-center hover:bg-[#D4AF37] hover:text-black hover:shadow-[0_0_35px_rgba(212,175,55,0.9)] transition-all duration-300">
+            <span className="text-xl tracking-widest mb-4">Гильдий</span>
+            <span className="text-2xl font-semibold">50 000 ₽</span>
+          </button>
+        </div>
       </section>
 
     </main>
