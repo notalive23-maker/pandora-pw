@@ -1,0 +1,20 @@
+{
+  "schema": "bg3-sprites-v1",
+  "base_url": "https://raw.githubusercontent.com/notalive23-maker/pandora-pw/main/bg3-sprites",
+  "notes": "Справочник. Спрайты появятся по указанным адресам после загрузки файлов в эту же папку.",
+  "characters": {
+    "astarion": {
+      "default": "smirk",
+      "emotions": {
+        "smirk": {
+          "file": "astarion_smirk.webp",
+          "label_ru": "Ухмылка"
+        },
+        "playful": {
+          "file": "astarion_playful.webp",
+          "label_ru": "Игривость"
+        }
+      }
+    }
+  }
+}
